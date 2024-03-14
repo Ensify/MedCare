@@ -1,15 +1,16 @@
 from torch import bfloat16
-
 import transformers
-
 from langchain_community.llms import HuggingFacePipeline
-
-
 import time
 
+from speech import SpeechRecognition
+
+
 class Summarizer:
+
     def __init__(self):
         self.llm = self.__build_llm()
+        self.transcribe = SpeechRecognition()
 
     def __build_llm(self):
         model_id = "meta-llama/Llama-2-13b-chat-hf"
@@ -63,13 +64,36 @@ Only tell included information do not add anything new. Just directly give the s
 [/INST]
 """
         return self.llm.invoke(template)
-    
-    def __call__(self, transcript, debug = False, better_meanings = True):
+
+    def get_doctor_summary(self,conversation):
+        template = f"""
+<s>[INST] <<SYS>>
+You are a summary bot who gives summary for medical conversation between a different doctor and a patient to the doctor as short hints.
+The summary is for the doctor, so include the medical terms as it is, only give hints. Directly give the summary do not add anything else.
+The summary should focus on the symptomps of the patient. Only tell included information do not add anything new.
+Just directly give the hints alone. It must be short.
+<</SYS>>
+{conversation}
+[/INST]
+"""
+        return self.llm.invoke(template)
+
+    def __call__(self, audio, debug = False):
         t = time.time()
-        conversation = self.annotate_transcript(transcript)
-        if debug: print(f"Time taken for annotation {time.time()-t}",conversation,sep="\n")
+        transcript = self.transcribe(audio, response = "all")
+        if debug: print(f"Time taken for speech recognition {time.time()-t}",transcript,sep="\n")
+        # t = time.time()
+        # conversation = self.annotate_transcript(transcript)
+        # if debug: print(f"Time taken for annotation {time.time()-t}",conversation,sep="\n")
+        conversation = transcript
         t = time.time()
         patient_summary = self.get_patient_summary(conversation)
         if debug: print(f"Time taken for patient summarization {time.time()-t}",patient_summary,sep="\n")
-        
-        return patient_summary
+        t = time.time()
+        doctor_summary = self.get_doctor_summary(conversation)
+        if debug: print(f"Time taken for doctor summarization {time.time()-t}",doctor_summary,sep="\n")
+
+        return {
+            'patientSummary': patient_summary,
+            'doctorSummary': doctor_summary
+        }
