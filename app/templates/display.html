@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Dashboard</title>
+    <style>
+        /* CSS styles */
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="#add_document">Add Document</a>
+    <a href="#patient_details">Patient Details</a>
+</div>
+
+<div class="content">
+    <h2 id="add_document">Add Document</h2>
+    <div class="form-container">
+        <form id="addDocumentForm" enctype="multipart/form-data">
+            <label for="doctor_name">Doctor Name:</label>
+            <input type="text" id="doctor_name" name="doctor_name" required>
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" name="file" required>
+            <input type="submit" value="Add Document">
+        </form>
+    </div>
+
+    <h2 id="patient_details">Patient Details</h2>
+    <button id="requestAccessBtn">Request Access</button>
+    <div id="otpFormContainer" style="display: none;">
+
+        <form action="/request_access" method="post">
+        <input type="text" id="otp" placeholder="Enter OTP" name="otp">
+        <input type="submit" value="Check OTP">
+    </form>
+    </div>
+</div>
+
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<a href="/logout">LOGOUT</a>
+
+<!-- Include jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    
+    $(document).ready(function() {
+        
+        $('#addDocumentForm').submit(function(event) {
+            event.preventDefault(); 
+            var formData = new FormData(this);
+            $.ajax({
+                url: '/handle_submit',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    alert(response); 
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error); 
+                }
+            });
+        });
+        
+
+        $('#requestAccessBtn').click(function() {
+            $.ajax({
+                url: '/generate_otp',
+                type: 'POST',
+                success: function(response) {
+                    // Show OTP input field after successfully generating OTP
+                    if(response.res ==="sent")
+                        $('#otpFormContainer').show();
+                    if(response.res ==="success")
+                        window.location.href="{{url_for('getdata')}}";
+                    alert(response.res); 
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        });
+
+        $('#checkOtpBtn').click(function() {
+            var inputOtp = $('#otpInput').val();
+            $.ajax({
+                url: '/request_access',
+                type: 'POST',
+                data: {otp: inputOtp},
+                success: function(response) {
+                    alert("OTP Verfied. Redirecting to patient details.");
+                    console.log(response);
+
+                    var patientDetails = response.data.patient_details;
+                    console.log(patientDetails);
+                    populateTable(patientDetails);
+
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        });
+
+
+    });
+
+
+    function populateTable(patientDetails) {
+    var table = '<table>';
+    table += '<thead><tr><th>Name</th><th>Phone</th><th>Email</th></tr></thead>';
+    table += '<tbody>';
+    patientDetails.forEach(function(patient) {
+        table += '<tr>';
+        table += '<td>' + patient.name + '</td>';
+        table += '<td>' + patient.phone + '</td>';
+        table += '<td>' + patient.email + '</td>';
+        table += '</tr>';
+    });
+    table += '</tbody></table>';
+    $('#patientDetailsTable').html(table);
+}
+</script>
+
+</body>
+</html>

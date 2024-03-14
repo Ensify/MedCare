@@ -24,3 +24,20 @@ Sprint 1 Goals:
 
 ** Sprint 1 Goals completed.**
 
+
+
+
+## Sprint 2
+
+Sprint 2 Goals:
+
+    - Admin approve
+    - Display page
+    - Add document
+    - OTP Verification
+
+12:10 - Admin approve
+12:40 - Display
+1:10  - Add document completed.
+
+** Sprint 2 Goals completed.**

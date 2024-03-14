@@ -1,17 +1,17 @@
+from base64 import b64encode
 from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify, Response
-import time
 from pymongo import MongoClient
+import time
 import os
 from bson.json_util import dumps
 from bson import ObjectId
 import dotenv
 import random
-
+import smtplib, ssl
 
 dotenv.load_dotenv()
 
 app = Flask(__name__)
-
 
 client = MongoClient(os.environ.get('MONGO_URI'))
 db = client["medical-simplify"]
@@ -20,6 +20,11 @@ hospital_users_collection = db["hospital-data"]
 
 auto_increment_collection = db["auto-increment-id-info"]
 patient_collection = db["patient-datas"]
+access_collection = db["access"]
+patient_ehr = db["patient-ehr"]
+conv_summary = db["conv-summaries"]
+
+# print(auto_increment_collection)
 
 
 def get_next_version_id(collection_auto_increment, coll_name, scan=None):
@@ -39,12 +44,38 @@ def get_next_version_id(collection_auto_increment, coll_name, scan=None):
 
     return 1 if not result else result["seq"]
 
+def send_mail(receiver_email, flag, hospital_name=None, otp=None):
+    port = 465  
+    smtp_server = "smtp.gmail.com"
+    sender_email = "vignesh1234can@gmail.com"  
+    # receiver_email = "your@gmail.com"  
+    password = "nhcy nbkt teag fnos"
+    if flag:
+        message = """
+        Subject: Medical Simplify - Verification Successful.
+
+        Hospital Verification is successful and you can now login with your registered mail id and password.
+        Thank you.
+        """
+    else:
+        message = f"""
+        Subject: Medical Simplify - OTP.
+
+        Your OTP to allow {hospital_name} to access your Medical records is {otp}
+        Thank you.
+        """
+
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+    print(f"Mail sent to {receiver_email}")
+    return True
 
 @app.route('/', methods=['GET'])
 def hello():
     return render_template('index.html')
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -73,7 +104,6 @@ def login():
             flash("Invalid Credentials")
     return render_template('login.html')
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -100,6 +130,41 @@ def register():
     return render_template('register.html')
 
 
+@app.route('/approve', methods=['GET','POST'])
+def admin_approve():
+    if request.method == 'POST':
+        try:
+            _id = int(request.form['hospitalId'].strip())
+            print(_id)
+            print(hospital_users_collection.count_documents({"hospitalId": _id}))
+            # result = hospital_users_collection.update_one({"hospitalId": _id}, {"$set": {"approved": True}})
+
+            document = hospital_users_collection.find_one({"hospitalId": _id})
+            print(document["email"])
+            result = hospital_users_collection.update_one({"hospitalId": _id}, {"$set": {"approved": True}})
+            print(document)
+            print(document["email"])
+
+            if document and result.matched_count > 0:
+                send_mail(receiver_email=document["email"], flag=True)
+                print("Mail sent successfully")
+
+            print("updated")
+            if result.modified_count == 1:
+                print("Approved successfully.")
+                flash("Approved successfully.")
+            else:
+                print("Hospital ID not found.")
+                flash("Hospital ID not found.")
+        except Exception as e:
+            print("An error occurred")
+            flash("An error occurred while updating the approval status.")
+            print(e)
+            
+        return redirect(url_for('admin_approve'))
+
+    to_be_approved = hospital_users_collection.find({"approved": False})
+    return render_template('admin_approve.html', users=to_be_approved)
 
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
@@ -113,6 +178,13 @@ def profiles():
     return render_template('profiles.html')
    
 
+@app.route('/display/<int:patientId>', methods=['GET', 'POST'])
+def display(patientId):
+    session["patientId"] = patientId
+    session["patientName"] = patient_collection.find_one({'patientId': patientId}).get('patientName')
+    print(f"Patient ID: {patientId} {session['patientName']}")
+    return render_template('display.html')
+
 @app.route('/add_profile', methods=['POST'])
 def add_profile():
     phone = int(request.form.get('phone').strip())
@@ -125,15 +197,66 @@ def add_profile():
     # patient_id = patient_data.get('patientId')
     print("Yay!!!!!!!1")
     print(name, phone)
-    return {'patientId': patient_data.get('patientId')}
+    return redirect(url_for('display', patientId=int(patient_id)))
+
+@app.route('/handle_submit', methods=['POST'])
+def handle_submit():
+    print(request.form)
+    # if 'add_document' in request.form:
+    doctor_name = request.form['doctor_name']
+    file = request.files['file']
+
+    content = file.read()
+    file_type = None
+    file_name_splitted = file.filename.split('.')
+    if len(file_name_splitted)>1:
+        file_type = file_name_splitted[1]
+
+    if not file_type=='pdf':
+        file_type = 'image'
+    patient_ehr.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "doctorName": doctor_name, "fileName": file.filename, "fileType": file_type ,"content": content})
+    print("Inserted ehr")
+    flash("File uploaded successfully")
+
+    # time.sleep(5)
+
+    return "File uploaded successfully"
+
+@app.route("/getdata", methods=["GET"])
+def getdata():
+    return "Patient Data"
+
+@app.route('/generate_otp', methods = ['POST'])
+def generate_otp():
+    access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
+
+    if access_doc and access_doc.get('access'):
+        return {"res": "success"}
+
+    otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    print(otp)
+    document = hospital_users_collection.find_one({"hospitalId": session["hospitalId"]})
+    hospital_name = document.get('hospitalName')
+
+    patient = patient_collection.find_one({"patientId": session["patientId"]})
+    access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "otp": otp, "access": False})
+    print(document)
+    if document:
+            send_mail(receiver_email=patient["email"], flag=False, hospital_name=hospital_name, otp=otp)
+            print("Mail sent successfully")
+    return {"res":"sent", "data": "OTP Sent successfully"}
+
+
+@app.route('/request_access', methods=['POST'])
+def request_access():
+    return "Access requested."
+
+
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     session.clear()
     return redirect(url_for('login'))
 
-
-
 if __name__ == "__main__":
-    app.run(debug=True, port=5050, host='0.0.0.0')
-
+    app.run(debug=True, port=5052, host='0.0.0.0')
