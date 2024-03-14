@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const nodemail = require("nodemailer");
 const otpGenerator = require("otp-generator");
+require("dotenv").config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,6 +18,7 @@ const otpconfig = {
   digits: true,
 };
 
+mongoose.connect(process.env.MONGODB_URI);
 const otpStorage = {};
 
 const db = mongoose.connection;
@@ -28,8 +30,8 @@ db.once("open", function () {
 const transporter = nodemail.createTransport({
   service: "Gmail",
   auth: {
-    user: "snekan13@gmail.com",
-    pass: "ftyt rdxo rszv ctog",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
