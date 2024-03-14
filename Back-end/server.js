@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const nodemail = require("nodemailer");
 const otpGenerator = require("otp-generator");
+const ConvSummaryModel = require("./models/convSummary.js");
+const patientdetailModel = require("./models/patientDetails.js");
 require("dotenv").config();
 
 const app = express();
@@ -86,4 +88,55 @@ app.post("/verifyotp", (req, res) => {
   } else {
     res.json({ success: false });
   }
+});
+
+app.get("/patientdetails", async (req, res) => {
+  try {
+    const phone = otpStorage[1];
+    const patients = await patientdetailModel.find({ phone });
+
+    console.log(patients);
+    res.json(patients);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.get("/conv-summary/:patientId", async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+
+    const records = await ConvSummaryModel.find({ patientId });
+    records.forEach((data) => {
+      data._id = data._id.toHexString();
+    });
+
+    res.json(records);
+  } catch (error) {
+    console.error("Error fetching records:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.get("/patientrecord/conv-summary/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ObjectId" });
+    }
+
+    const record = await ConvSummaryModel.findById(id);
+    if (!record) {
+      return res.status(404).json({ message: "Record not found" });
+    }
+
+    res.json(record);
+  } catch (error) {
+    console.error("Error fetching record:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+app.listen(5000, () => {
+  console.log("server running..");
 });
