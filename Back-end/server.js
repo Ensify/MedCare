@@ -72,3 +72,16 @@ app.post("/send-otp", (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     });
 });
+
+app.post("/verifyotp", (req, res) => {
+  console.log(otpStorage);
+  const { otp } = req.body;
+
+  const email = Object.keys(otpStorage).find((key) => otpStorage[key] === otp);
+  if (email) {
+    delete otpStorage[email];
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
+});
