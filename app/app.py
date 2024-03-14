@@ -19,6 +19,7 @@ app.config['SECRET_KEY'] = "MEDICAL_SIMPLIFY_KEY"
 hospital_users_collection = db["hospital-data"]
 
 auto_increment_collection = db["auto-increment-id-info"]
+patient_collection = db["patient-datas"]
 
 
 def get_next_version_id(collection_auto_increment, coll_name, scan=None):
@@ -99,12 +100,40 @@ def register():
     return render_template('register.html')
 
 
+
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
-    return {'message': 'success'}
+    if request.method == 'POST':
+        ph_no = int(request.form.get('phno').strip())
+        print(ph_no)
+        doc = patient_collection.find({"phone": ph_no})
+        print(doc)
+        return render_template('profiles.html', profiles=doc)
+
+    return render_template('profiles.html')
    
+
+@app.route('/add_profile', methods=['POST'])
+def add_profile():
+    phone = int(request.form.get('phone').strip())
+    name = request.form.get('patientName').strip()
+    email = request.form.get('email').strip()
+    patient_id = get_next_version_id(auto_increment_collection, "patient-datas")
+    patient_data = {"phone": phone, "patientName": name, "email": email, "patientId": patient_id}
+    result = patient_collection.insert_one(patient_data)
+    
+    # patient_id = patient_data.get('patientId')
+    print("Yay!!!!!!!1")
+    print(name, phone)
+    return {'patientId': patient_data.get('patientId')}
+
+@app.route('/logout', methods=['POST', 'GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 
 
 if __name__ == "__main__":
     app.run(debug=True, port=5050, host='0.0.0.0')
+

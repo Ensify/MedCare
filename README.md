@@ -20,4 +20,7 @@ Sprint 1 Goals:
     -  /login route for existing hospital login. 
     - /register route for new hospital, Gets all details in a form - After submitting, it needs to be reflected in the admin's interface for approval.
   
+11:50 PM - Profiles page and adding new profiles.
+
+** Sprint 1 Goals completed.**
 
