@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Simplify</title>
+</head>
+<body>
+    <form action="/register" method="post">
+
+        <label for="email">EMAIL:</label>
+        <input type="email" name="email" id="email">
+
+        <label for="hospital_name">HOSPITAL NAME:</label> <br/>
+        <input type="text" name="hospital_name" id="hospital_name">
+
+        <label for="hospital_address">HOSPITAL ADDRESS:</label> <br/>
+        <input type="text" name="hospital_address" id="hospital_address">
+
+        <label for="phone">CONTACT NUMBER:</label>
+        <input type="number" name="phone" id="phone">
+
+        <label for="password">PASSWORD:</label>
+        <input type="password" name="password" id="password">
+
+        <input type="submit" value="submit">
+    </form>
+
+<br/>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages%}
+     {{ message}}<br>
+     {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+</body>
+</html>
