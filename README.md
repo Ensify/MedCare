@@ -53,3 +53,11 @@ Sprint 3 Goals:
 9:00 AM - Testing complete
 
 **Sprint 3 End: Working API Endpoint to get informed patient summary and doctor summaries, Overall Patient Summary**
+
+## Sprint 4
+Sprint 4 Goals:
+
+- Implement OCR for image reports
+- Batch processing for Patient Summary
+
+**Sprint 4 End: Implemented OCR and batch processing**

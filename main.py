@@ -1,4 +1,4 @@
-from model import Summarizer
+from summary import Summarizer
 
 import os
 import dotenv
@@ -8,6 +8,9 @@ import uvicorn
 dotenv.load_dotenv()
 from pymongo import MongoClient
 from tempfile import TemporaryDirectory
+
+import pytesseract
+from PIL import Image
 
 app = FastAPI()
 
@@ -53,26 +56,36 @@ async def get_answer(patientId: int = Form(...), hospitalId: int = Form(...), do
 
     return {"Status":200}
 
+
 @app.post('/update_summary')
 async def update_summary(patientId:int = Form(...)):
     summaries  = collection.find({'patientId':patientId})
     summaries = [i['doctorSummary'] for i in summaries]
 
     documents = ehr_collection.find({"patientId":patientId,'fileType':"pdf"})
+    images = ehr_collection.find({"patientId":patientId,'fileType':"image"})
 
     temp_dir = TemporaryDirectory()
+    img_dir = TemporaryDirectory()
 
-    for i,doc in enumerate(documents):
+    for doc in documents:
         file = doc['content']
         with open(os.path.join(temp_dir.name,doc['fileName']),"wb") as f:
             f.write(file)
-    l = os.listdir(temp_dir.name)
-    print(l)
-    print(summaries)
-    summary = summarizer.patient_abstract(documents=l, summaries=summaries)
+    l = [os.path.join(temp_dir.name,i) for i in os.listdir(temp_dir.name)]
+
+    ocr_text = []
+    for img in images:
+        file = img['content']
+        with open(os.path.join(img_dir.name,img['fileName']),"wb") as f:
+            f.write(file)
+        ocr_text.append(pytesseract.image_to_string(Image.open(os.path.join(img_dir.name,img['fileName']))))
+
+    summary = summarizer.patient_abstract(documents=l, text= ocr_text, summaries=summaries)
 
     patient_collection.update_one({'patientId':patientId},{'$set':{'profileSummary':summary}})
 
+    img_dir.cleanup()
     temp_dir.cleanup()
     return summary
 

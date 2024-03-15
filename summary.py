@@ -175,7 +175,7 @@ Answer:[/INST]
         except:
             return ""
 
-    def patient_abstract(self, documents, summaries):
+    def patient_abstract(self, documents, text, summaries):
         document_content = ""
         for document in documents:
             doc = fitz.open(document)
@@ -184,6 +184,7 @@ Answer:[/INST]
                 document_content += text + "\n"
 
         summaries = "\n".join(summaries)
+        text= "\n".join(text)
         
         template = f"""
 <s>[INST] <<SYS>>
@@ -191,6 +192,10 @@ You will be given all patient reports and summaries of conversation between pati
 Just directly give the summary do not add anything else. Directly start with summary, dont say anything like "here is the summary".
 Dont create anything on your own. The output must only be from the given conversation and documents.
 <</SYS>>
+Reports: 
+{document_content}
+{text}
+
 Conversation Summaries: {summaries}
 Answer:[/INST]
 """
