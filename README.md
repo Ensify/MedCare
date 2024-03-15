@@ -60,4 +60,4 @@ Sprint 4 Goals:
 - Implement OCR for image reports
 - Batch processing for Patient Summary
 
-**Sprint 4 End: Implemented OCR and batch processing**
+**Sprint 4 End: Implemented OCR and batch processing [Working ML Backend]**
