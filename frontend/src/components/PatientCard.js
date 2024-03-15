@@ -28,7 +28,9 @@ function PatientCard() {
   return (
     <div>
       <div className="row justify-content-center outer-box">
-        <h3 className="text-center">Available Patients</h3>
+        <h2 style={{ marginTop: "30px" }} className="text-center">
+          Available Patients
+        </h2>
         {patients.map((patient, index) => (
           <div className="col-md-6" key={index}>
             <Link
@@ -39,6 +41,7 @@ function PatientCard() {
                 <div style={{ width: "50%" }} className="card text-center">
                   <div className="img">
                     <img
+                      style={{ width: "10rem" }}
                       alt="profile-pic"
                       className="profile-img"
                       src="https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg"
