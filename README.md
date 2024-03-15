@@ -77,8 +77,12 @@ Sprint 4 goals:
 Sprint 5 Goals:
     - Testing
     - Bug Fixes
-
+    - Containerize the application
 
 3: 30 - Testing and fixing app.py bug
 
+10: 00 AM - Containerized the application
 
+
+
+**Sprint 5 Goals Completed.**
