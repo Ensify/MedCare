@@ -13,7 +13,7 @@ Sprint 1 Goals:
 
 10:30 PM - Using OpenAI Whisper for speech to text - Complete
 
-11:00 PM - Tried Zephyr7B and Llama2 7B. Llama2 7B gave produced results
+11:00 PM - Tried Zephyr7B, Llama2 13B and Llama2 13B. Llama2 13B gave produced results
 
 11:20 PM - Working Patient Summary
 
@@ -34,3 +34,22 @@ Sprint 2 Goals:
 1:20 PM - Implemented and tested API endpoint
 
 **Sprint 2 End: Working API Endpoint to get patient and doctor summaries**
+
+## Sprint 3
+Sprint 3 Goals:
+
+- Implement Named Entity Recognition
+- Make informed summary
+- Implement suggestions given by doctor
+- Implement overall summaries
+- Make API endpoint for updating overal summaries
+
+4:15 AM - Named Entity Recognition completed
+
+5:00 AM - Medical Meaning API and Informed Meaning completed
+
+8:30 AM - Overall Patient Summary with API endpoint
+
+9:00 AM - Testing complete
+
+**Sprint 3 End: Working API Endpoint to get informed patient summary and doctor summaries, Overall Patient Summary**

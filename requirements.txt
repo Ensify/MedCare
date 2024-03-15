@@ -1,0 +1,11 @@
+transformers
+accelerate
+bitsandbytes
+langchain_community
+openai-whisper
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+pymupdf
+#pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
