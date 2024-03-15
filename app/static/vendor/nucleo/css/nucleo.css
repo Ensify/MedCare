@@ -275,6 +275,9 @@ License - nucleoapp.com/license/
 .ni-button-pause::before {
     content: "\ea1c";
 }
+.ni-doctor::before {
+    content: "🩺";
+}
 
 .ni-button-play::before {
     content: "\ea1d";
