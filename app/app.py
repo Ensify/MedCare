@@ -1,11 +1,10 @@
 from base64 import b64encode
-from flask import Flask, request, render_template, redirect, url_for, session, flash, jsonify, Response
+from flask import Flask, request, render_template, redirect, url_for, session, flash, Response
 from pymongo import MongoClient
 import os
 from bson import ObjectId
 import dotenv
 import random
-import requests
 import smtplib, ssl
 
 dotenv.load_dotenv()
@@ -251,15 +250,23 @@ def generate_otp():
     otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
     print(otp)
     document = hospital_users_collection.find_one({"hospitalId": session["hospitalId"]})
-    hospital_name = document.get('hospitalName')
+    
 
     patient = patient_collection.find_one({"patientId": session["patientId"]})
-    access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "otp": otp, "access": False})
+    if access_doc:
+        access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"otp": otp, "access": False}})
+    else:
+        access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "otp": otp, "access": False})
+
     print(document)
     if document:
+            hospital_name = document.get('hospitalName')
             send_mail(receiver_email=patient["email"], flag=False, hospital_name=hospital_name, otp=otp)
             print("Mail sent successfully")
     return {"res":"sent", "data": "OTP Sent successfully"}
+
+
+
 
 @app.route('/request_access', methods=['POST'])
 def request_access():
@@ -267,25 +274,24 @@ def request_access():
         print(request.form.items)
         input_otp = request.form.get('otp').strip()
         access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
-        print(access_doc.get('otp'))
+        print(f"OTP in DB:{access_doc.get('otp')}, OTP entered: {input_otp}")
+        
         if input_otp == access_doc.get('otp'):
             access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"access": True}})
             patient_details = patient_ehr.find({"patientId": session["patientId"]})
-            if patient_details:
-                print(patient_details)
-                summaries = conv_summary.find({"patientId": session["patientId"]})
-                profile_summary_doc = patient_collection.find_one({"patientId": session["patientId"]})
-                prof_summary = profile_summary_doc.get('profileSummary')
-               
-                suggestions = profile_summary_doc.get('suggestions')
-                # return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, name=session['patientName'])
-                return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'])
-            else:
-                return "Patient details not found. No docs available for the patient"
+           
+            print(patient_details)
+            summaries = conv_summary.find({"patientId": session["patientId"]})
+            profile_summary_doc = patient_collection.find_one({"patientId": session["patientId"]})
+            prof_summary = profile_summary_doc.get('profileSummary')
+            
+            suggestions = profile_summary_doc.get('suggestions')
+            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'])
+
         else:
-            # access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "access": False})
             flash("Invalid OTP. Try again")
             return "Invalid OTP. Try again"
+
 
 
 @app.route('/get_document/<string:_id>')
