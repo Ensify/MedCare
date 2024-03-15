@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../css/Patientprofiles.css";
+import { useAuth } from "../contexts/AuthContext";
 
 import { useNavigate } from "react-router-dom";
 import Loading from "./Loading";
@@ -10,6 +11,8 @@ function Patientprofiles() {
 
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,9 +26,13 @@ function Patientprofiles() {
       if (response.data.message === "Email sent") {
         console.log("OTP sent successfully");
         setIsLoading(false);
-        navigate("/otp");
+        const success = await login(phone);
+        if (success) {
+          navigate("/otp");
+        }
       } else if (response.data.message === "patient doesn't exist") {
         console.log("Invalid patient phone number ");
+
         setIsLoading(false);
         alert("patient Number doesnt exist");
       }

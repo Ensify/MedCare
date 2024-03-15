@@ -37,3 +37,22 @@ Sprint 2 Goals:
 1:40 AM - Fetching Records in Backend
 
 **Sprint 2 End: Completion upto Patient Records**
+
+## Sprint 3
+
+Sprint 3 Goals:
+
+- Implement Patient Summary Page
+- Desinging Summary page
+- Highlighting Complex words
+- Displaying meanings of complex words
+
+4:50 AM - Added Summary Page
+
+5:40 AM - Designed Patient Summary UI
+
+7:00 AM - Added Highlighting of complex words.
+
+8:30 AM - Added card Design meanings for complex words.
+
+**Sprint 3 End: Completion upto Summary Page**

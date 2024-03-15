@@ -7,13 +7,13 @@ import { Link, useParams } from "react-router-dom";
 const customStyles = {
   rows: {
     style: {
-      minHeight: "72px", // override the row height
+      minHeight: "72px",
       backgroundColor: "#F1FADA",
     },
   },
   headCells: {
     style: {
-      paddingLeft: "8px", // override the cell padding for head cells
+      paddingLeft: "8px",
       paddingRight: "8px",
       fontSize: "1.3em",
       fontWeight: "bolder",
@@ -22,7 +22,7 @@ const customStyles = {
   },
   cells: {
     style: {
-      paddingLeft: "8px", // override the cell padding for data cells
+      paddingLeft: "8px",
       paddingRight: "8px",
     },
   },
