@@ -72,4 +72,11 @@ Sprint 4 goals:
 **Sprint 4 Goals Completed.**
 
 
+## Sprint 5
 
+Sprint 5 Goals:
+    - Testing
+    - Bug Fixes
+
+
+3: 30 - Testing and fixing app.py bug
