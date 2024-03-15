@@ -184,7 +184,7 @@ def display(patientId):
     session["patientId"] = patientId
     session["patientName"] = patient_collection.find_one({'patientId': patientId}).get('patientName')
     print(f"Patient ID: {patientId} {session['patientName']}")
-    return render_template('display.html')
+    return render_template('display.html', patient_name = session["patientName"])
 
 @app.route('/add_profile', methods=['POST'])
 def add_profile():
@@ -238,7 +238,7 @@ def getdata():
 
     summaries = conv_summary.find({"patientId": session["patientId"]})
 
-    return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, name=session['patientName'], patient_id = session["patientId"], suggestions=suggestions)
+    return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, patient_name=session['patientName'], patient_id = session["patientId"], suggestions=suggestions)
 
 
 @app.route('/generate_otp', methods = ['POST'])
@@ -279,7 +279,7 @@ def request_access():
                
                 suggestions = profile_summary_doc.get('suggestions')
                 # return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, name=session['patientName'])
-                return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, name=session['patientName'])
+                return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'])
             else:
                 return "Patient details not found. No docs available for the patient"
         else:
