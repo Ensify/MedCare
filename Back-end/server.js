@@ -43,7 +43,7 @@ app.post("/send-otp", (req, res) => {
     .findOne({ phone: phone })
     .then((user) => {
       if (user) {
-        const { email } = user; // Extract email from the user document
+        const { email } = user;
 
         const otp = otpGenerator.generate(6, otpconfig);
         otpStorage[email] = otp;
@@ -52,8 +52,8 @@ app.post("/send-otp", (req, res) => {
         const mailoptions = {
           from: "snekan13@gmail.com",
           to: email,
-          subject: "Sample OTP",
-          text: "This is your OTP: " + otp,
+          subject: "OTP for Patient Login",
+          text: "Your otp for successful Login to the Portal : " + otp,
         };
 
         transporter.sendMail(mailoptions, (error, info) => {

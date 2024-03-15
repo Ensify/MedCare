@@ -14,6 +14,7 @@ function Otp() {
       .then((response) => {
         if (response.data.success) {
           console.log("OTP verified successfully");
+          alert("Otp verified successfully");
           navigate("/patientCard");
         } else {
           alert("Invalid otp");
