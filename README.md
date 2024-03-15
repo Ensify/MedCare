@@ -68,4 +68,17 @@ Sprint 4 Goals:
 
 11:00 AM - Added Protected React routes using react-router-dom
 
-**Sprint 3 End: Completion upto Authentication and Routing**
+**Sprint 4 End: Completion upto Authentication and Routing**
+
+## Sprint 5
+
+Sprint 5 Goals:
+
+- Updation of Frontend
+- Testing - Bug Fixes
+
+1:00 PM - Frontend updated and fixing minor bugs
+
+2:00 PM - Fixing Bugs
+
+**Sprint 5 End: Completion upto Frontend Changes and Bugs fixation**
