@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F1FADA; 
+            color: #265073; 
+            margin: 0;
+            padding: 0;
+        }
+
+        .navigation {
+            background-color: #2D9596; 
+            overflow: hidden;
+        }
+
+        .navigation a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navigation a:hover {
+            background-color: #265073; 
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #ffffff; 
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        input[type="submit"] {
+            background-color: #2D9596; 
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #265073; 
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: blue; 
+            color: white;
+        }
+        #requestAccessBtn{
+            background-color: #2D9596;
+            color : #fff;
+        }
+
+        #requestAccessBtn:hover{
+            background-color: #265073;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navigation d-flex">
+    <a href="#add_document">Add Document</a>
+    <a href="#patient_details">Patient Details</a>
+    <a href="/logout" class="ms-auto">Logout</a>
+</div>
+
+<div class="content">
+    <h2 id="add_document">Add Document</h2>
+    <div class="form-container">
+        <form id="addDocumentForm" enctype="multipart/form-data">
+            <label for="doctor_name">Doctor Name:</label>
+            <input type="text" id="doctor_name" name="doctor_name" required>
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" name="file" required>
+            <input type="submit" value="Add Document">
+        </form>
+    </div>
+
+    <h2 id="patient_details">Patient Details</h2>
+    <button id="requestAccessBtn" class="btn">Request Access</button>
+    <div id="otpFormContainer" style="display: none;">
+        <form action="/request_access" method="post">
+            <input type="text" id="otp" placeholder="Enter OTP" name="otp">
+            <input type="submit" value="Check OTP">
+        </form>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- <a href="/logout">LOGOUT</a> -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#addDocumentForm').submit(function(event) {
+            event.preventDefault(); 
+            var formData = new FormData(this);
+            $.ajax({
+                url: '/handle_submit',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    alert(response); 
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error); 
+                }
+            });
+        });
+        
+        $('#requestAccessBtn').click(function() {
+            $.ajax({
+                url: '/generate_otp',
+                type: 'POST',
+                success: function(response) {
+                    if(response.res ==="sent")
+                        $('#otpFormContainer').show();
+                    if(response.res ==="success")
+                        window.location.href="{{url_for('getdata')}}";
+                    alert(response.res); 
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        });
+
+        $('#checkOtpBtn').click(function() {
+            var inputOtp = $('#otpInput').val();
+            $.ajax({
+                url: '/request_access',
+                type: 'POST',
+                data: {otp: inputOtp},
+                success: function(response) {
+                    alert("OTP Verfied. Redirecting to patient details.");
+                    console.log(response);
+                    var patientDetails = response.data.patient_details;
+                    console.log(patientDetails);
+                    populateTable(patientDetails);
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        });
+    });
+
+    function populateTable(patientDetails) {
+        var table = '<table>';
+        table += '<thead><tr><th>Name</th><th>Phone</th><th>Email</th></tr></thead>';
+        table += '<tbody>';
+        patientDetails.forEach(function(patient) {
+            table += '<tr>';
+            table += '<td>' + patient.name + '</td>';
+            table += '<td>' + patient.phone + '</td>';
+            table += '<td>' + patient.email + '</td>';
+            table += '</tr>';
+        });
+        table += '</tbody></table>';
+        $('#patientDetailsTable').html(table);
+    }
+</script>
+
+</body>
+</html>

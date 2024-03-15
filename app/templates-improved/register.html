@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Simplify</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 50px auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input[type="email"],
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #5e72e4;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #4d5bea;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8eaf6;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/register" method="post">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email">
+
+        <label for="hospital_name">Hospital Name:</label>
+        <input type="text" name="hospital_name" id="hospital_name">
+
+        <label for="hospital_address">Hospital Address:</label>
+        <input type="text" name="hospital_address" id="hospital_address">
+
+        <label for="phone">Contact Number:</label>
+        <input type="number" name="phone" id="phone">
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password">
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <br/>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <br/>
+
+    <button class=""><a href="/">HOME</a></button>  
+</body>
+</html>

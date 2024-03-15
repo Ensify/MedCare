@@ -1,92 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Simplify</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            margin: 50px auto;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
-        input[type="email"],
-        input[type="text"],
-        input[type="number"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        input[type="submit"] {
-            background-color: #5e72e4;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        input[type="submit"]:hover {
-            background-color: #4d5bea;
-        }
-        .message {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e8eaf6;
-            border-radius: 4px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
+  <meta name="author" content="Creative Tim">
+  <title>MedCare</title>
+  <!-- Favicon -->
+  <link rel="icon" href="{{url_for( 'static', filename='img/brand/favicon.png') }}" type="image/png">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <!-- Icons -->
+  <link rel="stylesheet" href="{{url_for('static', filename='vendor/nucleo/css/nucleo.css')}}" type="text/css">
+
+  <link rel="stylesheet" href="{{url_for('static', filename='vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
+  
+  
+  <!-- Argon CSS -->
+  <link rel="stylesheet" href="{{url_for('static', filename='css/argon.css')}}" type="text/css">
+
+  <style>
+
+    .signin-card{
+      font-size: 1.5rem;
+      color: black !important;
+    }
+    .nav-text-c{
+      font-size: 1.2rem;
+    }
+
+    h1.text-white{
+      font-size: 2.5rem;
+    }
+
+    p.text-white{
+      font-size: 1.5rem;
+    }
+
+  </style>
+
 </head>
-<body>
-    <form action="/register" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email">
 
-        <label for="hospital_name">Hospital Name:</label>
-        <input type="text" name="hospital_name" id="hospital_name">
+<body class="bg-default">
+  <!-- Navbar -->
+  <nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light">
+    <div class="container">
 
-        <label for="hospital_address">Hospital Address:</label>
-        <input type="text" name="hospital_address" id="hospital_address">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
+        <div class="navbar-collapse-header">
+          <div class="row">
+            <!-- <div class="col-6 collapse-brand">
+              <a href="dashboard.html">
+                <img src="assets/img/brand/blue.png">
+              </a>
+            </div> -->
+            <div class="col-6 collapse-close">
+              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a href="/login" class="nav-link">
+              <span class="nav-link-inner--text nav-text-c">Login</span>
+            </a>
+          </li>
+        </ul>
+        <hr class="d-lg-none" />
+        <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
+      <div class="container">
+        <div class="header-body text-center mb-7">
+          <div class="row justify-content-center">
+            <div class="col-xl-5 col-lg-6 col-md-8 px-5">
+              <h1 class="text-white">MedCare</h1>
+              <p class="text-lead text-white">A platform to continously monitor Your Patients' Health</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="separator separator-bottom separator-skew zindex-100">
+        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="container mt--9 pb-5 signin-card">
+      <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+          <div class="card bg-secondary border-0 mb-0">
+            <!-- <div class="card-header bg-transparent pb-5">
+              <div class="text-muted text-center mt-2 mb-3"><small>Sign in with</small></div>
+              <div class="btn-wrapper text-center">
+                <a href="#" class="btn btn-neutral btn-icon">
+                  <span class="btn-inner--icon"><img src="assets/img/icons/common/github.svg"></span>
+                  <span class="btn-inner--text">Github</span>
+                </a>
+                <a href="#" class="btn btn-neutral btn-icon">
+                  <span class="btn-inner--icon"><img src="assets/img/icons/common/google.svg"></span>
+                  <span class="btn-inner--text">Google</span>
+                </a>
+              </div>
+            </div> -->
+            <div class="card-body px-lg-5 py-lg-5">
+              <div class="text-center mb-4">
+                <small>Hospital - Sign Up</small>
+              </div>
+              <form role="form" action="/register" method="post">
 
-        <label for="phone">Contact Number:</label>
-        <input type="number" name="phone" id="phone">
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password">
 
-        <input type="submit" value="Submit">
-    </form>
+                <div class="form-group">
+                  <div class="input-group input-group-merge input-group-alternative">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" style="color: black;"><i style="font-weight: 900; font-style: normal; font-size: large;">+</i></span>
+                    </div>
+                    <input class="form-control" placeholder="Hospital Name" type="text"name="hospital_name" id="hospital_name">
+                  </div>
+                </div>
 
-    <br/>
+                <div class="form-group">
+                    <div class="input-group input-group-merge input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" style="color: black;"><i class="ni ni-email-83" ></i></span>
+                      </div>
+                      <input class="form-control" placeholder="Email" type="email"  name="email" id="email" >
+                    </div>
+                  </div>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    <br/>
+                  <div class="form-group">
+                    <div class="input-group input-group-merge input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" style="color: black;"><i class="ni ni-pin-3" ></i></span>
+                      </div>
+                      <input class="form-control" placeholder="Hospital Address" type="text"  name="hospital_address" id="hospital_address" >
+                    </div>
+                  </div>
 
-    <button class=""><a href="/">HOME</a></button>  
+                  <div class="form-group mb-3">
+                    <div class="input-group input-group-merge input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" style="color: black;"><i class="ni ni-bullet-list-67" ></i></span>
+                      </div>
+                      <input class="form-control" placeholder="Contact Number" type="number"  name="phone" id="phone" >
+                    </div>
+                  </div>
+
+                  <div class="form-group mb-3">
+                    <div class="input-group input-group-merge input-group-alternative">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" style="color: black;"><i class="ni ni-lock-circle-open" ></i></span>
+                      </div>
+                      <input class="form-control" placeholder="Password" type="password"  name="password" id="password" >
+                    </div>
+                  </div>
+                
+                <!-- <div class="custom-control custom-control-alternative custom-checkbox">
+                  <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
+                  <label class="custom-control-label" for=" customCheckLogin">
+                    <span class="text-muted">Remember me</span>
+                  </label>
+                </div> -->
+                <div class="text-center">
+                  <button type="submit" name="login" class="btn btn-primary my-4">Sign in</button>
+                  <!-- <a target="_self" href="profiles.html" class="btn btn-round btn-primary my-4">Sign in</a> -->
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <!-- <div class="col-6">
+              <a href="#" class="text-light"><small>Forgot password?</small></a>
+            </div> -->
+            <div class="col-9">
+              <a href="/login" class="text-light"><small>Already have an account?</small></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="py-5" id="footer-main">
+    <div class="container">
+      <div class="row align-items-center justify-content-xl-between">
+        <div class="col-xl-6">
+          <!-- <div class="copyright text-center text-xl-left text-muted">
+            &copy; 2020 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_self">Creative Tim</a>
+          </div> -->
+        </div>
+        <div class="col-xl-6">
+          <!-- <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+             <li class="nav-item">
+              <a href="https://www.creative-tim.com" class="nav-link" target="_self">Creative Tim</a>
+            </li> 
+            <li class="nav-item">
+              <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_self">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="http://blog.creative-tim.com" class="nav-link" target="_self">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md" class="nav-link" target="_self">MIT License</a>
+            </li>
+          </ul> -->
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Argon Scripts -->
+  <!-- Core -->
+  <script src="{{url_for('static',filename='vendor/@fortawesome/fontawesome-free/js/jquery.min.js')}}"></script>
+
+
+  <script src="{{url_for('static',filename='vendor/@fortawesome/fontawesome-free/js/bootstrap.min.js')}}"></script>
+  <script src="{{url_for('static',filename='vendor/js-cookie/js.cookie.js')}}"></script>
+  <script src="{{url_for('static',filename='vendor/jquery.scrollbar/jquery.scrollbar.min.js')}}"></script>
+  <!-- <script src="assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script> -->
+  <!-- Argon JS -->
+  <script src="{{url_for('static',filename='js/argon.js')}}"></script>
+
+  
 </body>
+
 </html>

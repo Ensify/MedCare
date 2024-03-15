@@ -22,7 +22,7 @@ Sprint 1 Goals:
   
 11:50 PM - Profiles page and adding new profiles.
 
-** Sprint 1 Goals completed.**
+**Sprint 1 Goals completed.**
 
 
 
@@ -40,7 +40,7 @@ Sprint 2 Goals:
 12:40 AM - Display
 1:10 AM  - Add document completed.
 
-** Sprint 2 Goals completed.**
+**Sprint 2 Goals completed.**
 
 
 ## Sprint 3
@@ -48,14 +48,28 @@ Sprint 2 Goals:
 Sprint 3 Goals:
 
     - Patient Details page
+    - UI Improvements
     - Conversation summaries 
     - EHR's
   
   
-1: 50 AM - Patient Details page
+1: 50 AM - Patient Details page, UI Improvements
 3 AM     - Conversation summaries rendering and EHR's rendering.
 3:40     - Fixed OTP Verfication Bug
 
 
-** Sprint 3 Goals completed.**
+**Sprint 3 Goals completed.**
+
+
+
+## Sprint 4
+
+Sprint 4 goals:
+    - Better UI/UX
+    - Bug Fixes
+
+
+**Sprint 4 Goals Completed.**
+
+
 
