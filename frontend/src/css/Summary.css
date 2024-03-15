@@ -1,0 +1,35 @@
+/* body {
+  background-color: #dcf2f1;
+} */
+html {
+  background-color: #dcf2f1;
+}
+.summary-page {
+  /* //background-color: #dcf2f1; */
+  height: 100vh;
+  padding-top: 6rem;
+}
+
+.summary-text {
+  line-height: 1.8;
+  font-size: 1.5em;
+  color: #0f1035;
+  font-weight: 500;
+}
+
+.highlighted-text {
+  background-color: #7fc7d9;
+  border-radius: 3px;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+
+.speak-button {
+  background-color: #2d9596;
+  padding: 2px 5px;
+  border-radius: 10px;
+  margin-top: 1rem;
+  width: 800px;
+  color: #fff;
+  border: none;
+}
