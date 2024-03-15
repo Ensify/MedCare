@@ -1,4 +1,5 @@
 from base64 import b64encode
+from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, session, flash, Response
 from pymongo import MongoClient
 import os
@@ -263,7 +264,7 @@ def generate_otp():
             hospital_name = document.get('hospitalName')
             send_mail(receiver_email=patient["email"], flag=False, hospital_name=hospital_name, otp=otp)
             print("Mail sent successfully")
-    return {"res":"sent", "data": "OTP Sent successfully"}
+    return {"res":"sent" , "data": "OTP Sent successfully to "+ patient["email"]}
 
 
 
@@ -277,7 +278,7 @@ def request_access():
         print(f"OTP in DB:{access_doc.get('otp')}, OTP entered: {input_otp}")
         
         if input_otp == access_doc.get('otp'):
-            access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"access": True}})
+            access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"access": True, "time": datetime.now()}})
             patient_details = patient_ehr.find({"patientId": session["patientId"]})
            
             print(patient_details)
@@ -301,10 +302,9 @@ def get_document(_id):
         doc = patient_ehr.find_one({"_id": doc_id})
         if doc:
             content_base64 = b64encode(doc["content"]).decode("utf-8")
-            content_type = "image/png" 
             data_uri = f"data:;base64,{content_base64}"
 
-            html_content = f'<html><body><img src="{data_uri}" /></body></html>'
+            html_content = f'<img src="{data_uri}" />'
 
             return Response(html_content, status=200)
         else:

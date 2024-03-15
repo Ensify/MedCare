@@ -22,6 +22,12 @@
 </head>
 
 <body>
+  <button id="modal-close-btn" style="display: none; position: fixed; right: 10px ; top: 10px; z-index: 10000001; border: 0; background-color: rgba(255, 255, 255, 0); font-weight: 500; font-size: 2rem; color: white;" onclick="closeModal()">X</button>
+  <div id="document-modal" style="display: none; z-index: 10000000; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <div id="content-container" class="container" style="background-color: white;">
+    </div>
+  </div>
+  <div id="blur" style="display: none; z-index: 1000000; position: fixed; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.585);"></div>
   <!-- Sidenav -->
   <nav class="sidenav navbar navbar-vertical  fixed-left  navbar-expand-xs navbar-light bg-white" id="sidenav-main">
     <div class="scrollbar-inner">
@@ -285,11 +291,27 @@
       fetch('/get_document/' + docId)
         .then(response => response.text())
         .then(content => {
-
-          var newWindow = window.open();
-          newWindow.document.write(content);
+          const modal = document.getElementById("document-modal");
+          const contentContainer = document.getElementById("content-container");
+          const blur = document.getElementById("blur");
+          const closeBtn = document.getElementById("modal-close-btn");
+          closeBtn.style.display = "block";
+          modal.style.display = "block";
+          blur.style.display = "block";
+          contentContainer.innerHTML = content;
         })
         .catch(error => console.error('Error fetching document:', error));
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("document-modal");
+      const contentContainer = document.getElementById("content-container");
+      const blur = document.getElementById("blur");
+      const closeBtn = document.getElementById("modal-close-btn");
+      closeBtn.style.display = "none";
+      modal.style.display = "none";
+      blur.style.display = "none";
+      contentContainer.innerHTML = "";
     }
   </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -314,15 +314,18 @@
           });
           
           $('#requestAccessBtn').click(function() {
+            $('#requestAccessBtn').text('Sending OTP...');
               $.ajax({
                   url: '/generate_otp',
                   type: 'POST',
                   success: function(response) {
-                      if(response.res ==="sent")
-                          $('#otpFormContainer').show();
+                      if(response.res ==="sent"){
+                        $('#otpFormContainer').show();
+                        $('#requestAccessBtn').text('Resend OTP');
+                      }
                       if(response.res ==="success")
                           window.location.href="{{url_for('getdata')}}";
-                      alert(response.res); 
+                      alert(response.data); 
                   },
                   error: function(xhr, status, error) {
                       alert('Error: ' + error);
