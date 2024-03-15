@@ -246,7 +246,7 @@ def generate_otp():
     access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
 
     if access_doc and access_doc.get('access'):
-        return {"res": "success"}
+        return {"res": "success", "data": "Success"}
 
     otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
     print(otp)
@@ -287,7 +287,7 @@ def request_access():
             prof_summary = profile_summary_doc.get('profileSummary')
             
             suggestions = profile_summary_doc.get('suggestions')
-            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'])
+            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'], patient_id=session['patientId'])
 
         else:
             flash("Invalid OTP. Try again")
