@@ -4,7 +4,6 @@ import { useAuth } from "../contexts/AuthContext";
 
 const ProtectedRoute = () => {
   const auth = useAuth();
-  console.log(auth);
   return auth.user === null ? <Navigate to="/patientprofile" /> : <Outlet />;
 };
 

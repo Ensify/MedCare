@@ -56,3 +56,16 @@ Sprint 3 Goals:
 8:30 AM - Added card Design meanings for complex words.
 
 **Sprint 3 End: Completion upto Summary Page**
+
+## Sprint 4
+
+Sprint 4 Goals:
+
+- Implement Authentication
+- Implement Protected React routes
+
+9:30 AM - Added Routing Authentication
+
+11:00 AM - Added Protected React routes using react-router-dom
+
+**Sprint 3 End: Completion upto Authentication and Routing**
