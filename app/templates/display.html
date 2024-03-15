@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Dashboard</title>
-    <style>
-        /* CSS styles */
-    </style>
+
 </head>
 <body>
 
@@ -48,7 +46,6 @@
 {% endwith %}
 <a href="/logout">LOGOUT</a>
 
-<!-- Include jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
@@ -79,7 +76,7 @@
                 url: '/generate_otp',
                 type: 'POST',
                 success: function(response) {
-                    // Show OTP input field after successfully generating OTP
+                    
                     if(response.res ==="sent")
                         $('#otpFormContainer').show();
                     if(response.res ==="success")

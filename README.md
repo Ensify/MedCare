@@ -14,7 +14,7 @@ Sprint 1 Goals:
 
 
 
-10: 30 - Mongodb connencted, Basic routes written.
+10: 30 PM - Mongodb connencted, Basic routes written.
 
 11: 14 PM - Login code implementation: 
     -  /login route for existing hospital login. 
@@ -36,8 +36,26 @@ Sprint 2 Goals:
     - Add document
     - OTP Verification
 
-12:10 - Admin approve
-12:40 - Display
-1:10  - Add document completed.
+12:10 AM - Admin approve
+12:40 AM - Display
+1:10 AM  - Add document completed.
 
 ** Sprint 2 Goals completed.**
+
+
+## Sprint 3
+
+Sprint 3 Goals:
+
+    - Patient Details page
+    - Conversation summaries 
+    - EHR's
+  
+  
+1: 50 AM - Patient Details page
+3 AM     - Conversation summaries rendering and EHR's rendering.
+3:40     - Fixed OTP Verfication Bug
+
+
+** Sprint 3 Goals completed.**
+

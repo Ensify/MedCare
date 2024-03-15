@@ -49,7 +49,7 @@ def send_mail(receiver_email, flag, hospital_name=None, otp=None):
     smtp_server = "smtp.gmail.com"
     sender_email = "vignesh1234can@gmail.com"  
     # receiver_email = "your@gmail.com"  
-    password = "nhcy nbkt teag fnos"
+    password = os.environ.get('PASSWORD_MAIL')
     if flag:
         message = """
         Subject: Medical Simplify - Verification Successful.
@@ -224,7 +224,20 @@ def handle_submit():
 
 @app.route("/getdata", methods=["GET"])
 def getdata():
-    return "Patient Data"
+    # access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
+    # print(access_doc.get('access'))
+    # if access_doc and access_doc.get('access'):
+    profile_summary_doc = patient_collection.find_one({"patientId": session["patientId"]})
+    prof_summary = profile_summary_doc.get('profileSummary')
+    # print(prof_summary)
+    patient_details = patient_ehr.find({"patientId": session["patientId"]})
+    # if patient_details:
+    print(patient_details)
+
+    summaries = conv_summary.find({"patientId": session["patientId"]})
+
+    return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, name=session['patientName'])
+
 
 @app.route('/generate_otp', methods = ['POST'])
 def generate_otp():
@@ -239,19 +252,57 @@ def generate_otp():
     hospital_name = document.get('hospitalName')
 
     patient = patient_collection.find_one({"patientId": session["patientId"]})
-    access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "otp": otp, "access": False})
+    if access_doc:
+        access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"otp": otp, "access": False}})
+    else:
+        access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "otp": otp, "access": False})
     print(document)
     if document:
             send_mail(receiver_email=patient["email"], flag=False, hospital_name=hospital_name, otp=otp)
             print("Mail sent successfully")
     return {"res":"sent", "data": "OTP Sent successfully"}
 
-
 @app.route('/request_access', methods=['POST'])
 def request_access():
-    return "Access requested."
+    if request.method == 'POST':
+        print(request.form.items)
+        input_otp = request.form.get('otp').strip()
+        access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
+        print(f" OTP in DB: {access_doc.get('otp')}, OTP entered: {input_otp}")
+        if input_otp == access_doc.get('otp'):
+            access_collection.update_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]}, {"$set": {"access": True}})
+            patient_details = patient_ehr.find({"patientId": session["patientId"]})
+            summaries = conv_summary.find({"patientId": session["patientId"]})
+          
+            print(patient_details)
+            profile_summary_doc = patient_collection.find_one({"patientId": session["patientId"]})
+            prof_summary = profile_summary_doc.get('profileSummary')
+            # print(prof_summary)
+            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, name=session['patientName'])
+
+        else:
+            # access_collection.insert_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"], "access": False})
+            flash("Invalid OTP. Try again")
+            return "Invalid OTP. Try again"
 
 
+@app.route('/get_document/<string:_id>')
+def get_document(_id):
+    try:
+        doc_id = ObjectId(_id)
+        doc = patient_ehr.find_one({"_id": doc_id})
+        if doc:
+            content_base64 = b64encode(doc["content"]).decode("utf-8")
+            content_type = "image/png" 
+            data_uri = f"data:;base64,{content_base64}"
+
+            html_content = f'<html><body><img src="{data_uri}" /></body></html>'
+
+            return Response(html_content, status=200)
+        else:
+            return "File not found", 404
+    except Exception as e:
+        return f"Error: {str(e)}", 400
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
