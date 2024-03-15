@@ -4,6 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Simplify</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5ff;
+            color: #4b0082; 
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #4b0082; 
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td button {
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 8px 12px;
+            transition: background-color 0.3s;
+        }
+
+        td button:hover {
+            background-color: #45a049; 
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50; 
+            color: white; 
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #45a049; 
+        }
+        .blue-button {
+    background-color: white; 
+    color: #ffffff; 
+    padding: 5px 5px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: background-color 0.3s; 
+}
+
+
+.blue-button:hover {
+    background-color: white; 
+}
+    </style>
 </head>
 <body>
     <h1>Users to be Approved</h1>
@@ -34,6 +111,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="/logout">LOGOUT</a>
+ <button class="blue-button"><a href="/logout">LOGOUT</a></button>   
 </body>
 </html>

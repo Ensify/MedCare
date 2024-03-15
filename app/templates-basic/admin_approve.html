@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Simplify</title>
+</head>
+<body>
+    <h1>Users to be Approved</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Hospital Name</th>
+                <th>Hospital Address</th>
+                <th>Contact Number</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.hospitalName }}</td>
+                <td>{{ user.hospitalAddress }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>
+                    <form action="/approve" method="POST">
+                        <input type="hidden" name="hospitalId" value="{{ user.hospitalId }}">
+                        <button type="submit">Approve</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/logout">LOGOUT</a>
+</body>
+</html>

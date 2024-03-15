@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a href="/logout">LOGOUT</a>
+    <div class="container">
+        <h2>Patient Details</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Hospital ID</th>
+                    <th>Doctor Consulted</th>
+                    <th>File Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in patient_details %}
+                    <tr>
+                        <td>{{ doc.patientId }}</td>
+                        <td>{{ doc.hospitalId }}</td>
+                        <td>{{ doc.doctorName }}</td>
+                        <td>{{ doc.fileName }}</td>
+                        <td><button class="btn" onclick="viewDocument('{{ doc._id }}')">View</button></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <script>
+        function viewDocument(docId) {
+          
+            fetch('/get_document/' + docId)
+            .then(response => response.text())
+            .then(content => {
+         
+                var newWindow = window.open();
+                newWindow.document.write(content);
+            })
+            .catch(error => console.error('Error fetching document:', error));
+        }
+    </script>
+</body>
+</html>
