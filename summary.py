@@ -7,9 +7,12 @@ from transformers import pipeline, AutoTokenizer, AutoModelForTokenClassificatio
 from langchain_community.llms import HuggingFacePipeline
 import whisper
 
+from deep_translator import GoogleTranslator
+
 import time
 import requests
 import fitz
+
 
 class NER:
     class NERAll:
@@ -74,9 +77,9 @@ class SpeechRecognition:
     def __call__(self, audio_file, response = "text"):
         out = self.model.transcribe(audio_file)
         if response == "text":
-          return out["text"]
+          return out["text"], out['language']
         else:
-          return "\n".join(i['text'] for i in out['segments'])
+          return "\n".join(i['text'] for i in out['segments']), out['language']
 
 class Summarizer:
 
@@ -84,6 +87,7 @@ class Summarizer:
         self.ner = NER()
         self.llm = self.__build_llm()
         self.transcribe = SpeechRecognition()
+        self.translator = GoogleTranslator(source='auto',target="en")
 
     def __build_llm(self):
         model_id = "meta-llama/Llama-2-13b-chat-hf"
@@ -215,7 +219,10 @@ It is for the patient to easily see what they must follow. If there is no sugges
     
     def __call__(self, audio, debug = False, better_meanings = True):
         t = time.time()
-        transcript = self.transcribe(audio, response = "all")
+        transcript, lang = self.transcribe(audio, response = "all")
+        if lang != 'en':
+            transcript = self.translator.translate(transcript)
+            
         if debug: print(f"Time taken for speech recognition {time.time()-t}",transcript,sep="\n")
         # t = time.time()
         # conversation = self.annotate_transcript(transcript)

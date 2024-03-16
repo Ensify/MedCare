@@ -9,6 +9,8 @@ dotenv.load_dotenv()
 from pymongo import MongoClient
 from tempfile import TemporaryDirectory
 
+from deep_translator import GoogleTranslator
+
 import pytesseract
 from PIL import Image
 
@@ -32,6 +34,14 @@ app.add_middleware(
 @app.get('/')
 def root():
     return "Medical Summary Bot API"
+
+@app.post('/translated')
+async def get_answer(text: str = Form(...), lang: str = Form(...)):
+    try:
+        res = GoogleTranslator(source='en',target=lang).translate(text)
+        return {'status': 'success', 'text': res}
+    except:
+        return {'status': 'error','text': text}
 
 @app.post('/process')
 async def get_answer(patientId: int = Form(...), hospitalId: int = Form(...), doctorName: str = Form(...), date: str = Form(...), audio_file: UploadFile = File(...)):

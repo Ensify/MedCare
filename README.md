@@ -61,3 +61,10 @@ Sprint 4 Goals:
 - Batch processing for Patient Summary
 
 **Sprint 4 End: Implemented OCR and batch processing [Working ML Backend]**
+
+## Sprint 5
+Sprint 5 Goals:
+
+- Multilingual Support
+
+**Sprint 5 End: Implemented Multlingual support**
