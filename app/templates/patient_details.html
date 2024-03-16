@@ -209,7 +209,7 @@
 
           <div class="card card-upgrade">
             <div class="card-header text-center border-bottom-0">
-              <h4 class="card-title">Profiles - {{user_name}}</h4>
+              <h4 class="card-title">Profiles</h4>
               <!-- <p class="card-category">Viewing as: {{view}}</p> -->
             </div>
             <div class="card-body">
@@ -218,7 +218,7 @@
                   <thead>
                     <tr>
                       <th>Patient ID</th>
-                      <th>Hospital ID</th>
+                      <th>Hospital Name</th>
                       <th>Doctor Consulted</th>
                       <th>File Name</th>
                       <th>Actions</th>
@@ -229,7 +229,7 @@
                     {% for doc in patient_details %}
                     <tr>
                       <td class="text-dark">{{ doc.patientId }}</td>
-                      <td class="text-dark">{{ doc.hospitalId }}</td>
+                      <td class="text-dark">{{ hospital_names[loop.index-1] }}</td>
                       <td class="text-dark">{{ doc.doctorName }}</td>
                       <td class="text-dark">{{ doc.fileName }}</td>
                       <td>

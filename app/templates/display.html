@@ -294,24 +294,31 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <script>
-      $(document).ready(function() {
-          $('#addDocumentForm').submit(function(event) {
-              event.preventDefault(); 
-              var formData = new FormData(this);
-              $.ajax({
-                  url: '/handle_submit',
-                  type: 'POST',
-                  data: formData,
-                  contentType: false,
-                  processData: false,
-                  success: function(response) {
-                      alert(response); 
-                  },
-                  error: function(xhr, status, error) {
-                      alert('Error: ' + error); 
-                  }
+
+          $(document).ready(function() {
+              $('#addDocumentForm').submit(function(event) {
+                  event.preventDefault(); 
+                  var formData = new FormData(this);
+                  var form = $(this); 
+
+                  $.ajax({
+                      url: '/handle_submit',
+                      type: 'POST',
+                      data: formData,
+                      contentType: false,
+                      processData: false,
+                      success: function(response) {
+                          alert(response); 
+                          
+                          form.trigger('reset');
+                      },
+                      error: function(xhr, status, error) {
+                          alert('Error: ' + error); 
+                      }
+                  });
               });
           });
+
           
           $('#requestAccessBtn').click(function() {
             $('#requestAccessBtn').text('Sending OTP...');
@@ -351,7 +358,7 @@
                   }
               });
           });
-      });
+      
   
       function populateTable(patientDetails) {
           var table = '<table>';

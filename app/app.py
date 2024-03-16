@@ -1,6 +1,6 @@
 from base64 import b64encode
 from datetime import datetime
-from flask import Flask, request, render_template, redirect, url_for, session, flash, Response
+from flask import Flask, request, render_template, redirect, url_for, session, flash, Response, abort
 from pymongo import MongoClient
 import os
 from bson import ObjectId
@@ -84,6 +84,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
         if email=="admin@gmail.com" and password=="admin":
+            session["admin"] = True
             return redirect(url_for('admin_approve'))
         
         user = hospital_users_collection.find_one({"email": email})
@@ -105,6 +106,7 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
     if request.method == 'GET':
         return render_template('register.html')
     elif request.method == 'POST':
@@ -131,6 +133,8 @@ def register():
 
 @app.route('/approve', methods=['GET','POST'])
 def admin_approve():
+    if "admin" not in session:
+        abort(401) 
     if request.method == 'POST':
         try:
             _id = int(request.form['hospitalId'].strip())
@@ -165,6 +169,8 @@ def admin_approve():
 
 @app.route('/profiles', methods=['GET', 'POST'])
 def profiles():
+    if "email" not in session:
+        abort(401) 
     if request.method == 'POST':
         ph_no = request.form.get('phno').strip()
         if not ph_no:
@@ -181,6 +187,8 @@ def profiles():
 
 @app.route('/display/<int:patientId>', methods=['GET', 'POST'])
 def display(patientId):
+    if "email" not in session:
+        abort(401)
     session["patientId"] = patientId
     session["patientName"] = patient_collection.find_one({'patientId': patientId}).get('patientName')
     print(f"Patient ID: {patientId} {session['patientName']}")
@@ -225,6 +233,8 @@ def handle_submit():
 
 @app.route("/getdata", methods=["GET"])
 def getdata():
+    if "email" not in session:
+        abort(401)
     # access_doc = access_collection.find_one({"hospitalId": session["hospitalId"], "patientId": session["patientId"]})
     # print(access_doc.get('access'))
     # if access_doc and access_doc.get('access'):
@@ -235,11 +245,21 @@ def getdata():
     patient_details = patient_ehr.find({"patientId": session["patientId"]})
     # if patient_details:
     print(patient_details)
-
+    patient_details = list(patient_details)
     summaries = conv_summary.find({"patientId": session["patientId"]})
+    hospital_names = get_hospital_names(patient_details)
+    # print(f"Now patient details: {patient_details}")
 
-    return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, patient_name=session['patientName'], patient_id = session["patientId"], suggestions=suggestions)
+    return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, patient_name=session['patientName'], patient_id = session["patientId"], suggestions=suggestions, hospital_names=hospital_names)
 
+
+def get_hospital_names(ehrs):
+    hospital_names = []
+    for ehr in ehrs:
+        hosp_doc = hospital_users_collection.find_one({'hospitalId': ehr.get('hospitalId')})
+        hospital_names.append(hosp_doc.get('hospitalName'))
+    print(hospital_names)
+    return hospital_names
 
 @app.route('/generate_otp', methods = ['POST'])
 def generate_otp():
@@ -282,12 +302,14 @@ def request_access():
             patient_details = patient_ehr.find({"patientId": session["patientId"]})
            
             print(patient_details)
+            patient_details = list(patient_details)
             summaries = conv_summary.find({"patientId": session["patientId"]})
             profile_summary_doc = patient_collection.find_one({"patientId": session["patientId"]})
             prof_summary = profile_summary_doc.get('profileSummary')
             
             suggestions = profile_summary_doc.get('suggestions')
-            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'], patient_id=session['patientId'])
+            hospital_names = get_hospital_names(patient_details)
+            return render_template('patient_details.html', patient_details=patient_details, summaries=summaries, profile_summary=prof_summary, suggestions=suggestions, patient_name=session['patientName'], patient_id=session['patientId'], hospital_names =hospital_names)
 
         else:
             flash("Invalid OTP. Try again")
@@ -311,6 +333,22 @@ def get_document(_id):
             return "File not found", 404
     except Exception as e:
         return f"Error: {str(e)}", 400
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return render_template('401.html'), 401
+
+
+@app.errorhandler(405)
+def unauthorized(e):
+    return render_template('405.html'), 405
+
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():

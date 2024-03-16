@@ -86,3 +86,18 @@ Sprint 5 Goals:
 
 
 **Sprint 5 Goals Completed.**
+
+
+
+Sprint 6 Goals:
+
+    - Minor UI changes
+    - Bug fixes
+    - Error Handling
+  
+
+8:00 AM - Minor UI changes
+
+12:30 PM - Error handling, Custom html pages added to handle errors 404, 405, 401
+
+**Sprint 6 Goals Completed.**
