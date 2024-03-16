@@ -88,7 +88,7 @@ Sprint 5 Goals:
 **Sprint 5 Goals Completed.**
 
 
-
+## Sprint 6
 Sprint 6 Goals:
 
     - Minor UI changes
