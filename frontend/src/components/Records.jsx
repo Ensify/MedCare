@@ -64,7 +64,7 @@ const Records = () => {
     const fetchRecords = async () => {
       try {
         const response = await axios.get(
-          `http://13.201.194.131:5000/conv-summary/${patientId}`
+          `http://localhost:5000/conv-summary/${patientId}`
         );
         response.data.forEach((data) => {
           console.log(data._id);

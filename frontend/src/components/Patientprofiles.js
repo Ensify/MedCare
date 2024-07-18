@@ -19,7 +19,7 @@ function Patientprofiles() {
     try {
       setIsLoading(true);
 
-      const response = await axios.post("http://13.201.194.131:5000/send-otp", {
+      const response = await axios.post("http://localhost:5000/send-otp", {
         phone: phone,
       });
 

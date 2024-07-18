@@ -10,7 +10,7 @@ function Otp() {
     e.preventDefault();
     console.log(otp);
     axios
-      .post("http://13.201.194.131:5000/verifyotp", { otp: otp })
+      .post("http://localhost:5000/verifyotp", { otp: otp })
       .then((response) => {
         if (response.data.success) {
           console.log("OTP verified successfully");

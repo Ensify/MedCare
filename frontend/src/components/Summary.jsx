@@ -17,7 +17,7 @@ const Summary = () => {
     const fetchRecord = async () => {
       try {
         const record = await axios.get(
-          `http://13.201.194.131:5000/patientrecord/conv-summary/${id}`
+          `http://localhost:5000/patientrecord/conv-summary/${id}`
         );
         setSummaryText(record.data.patientSummary.summaryText);
         setComplexwords(record.data.patientSummary.indices);

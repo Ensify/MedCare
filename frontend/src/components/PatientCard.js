@@ -10,7 +10,7 @@ function PatientCard() {
     const fetchPatients = async () => {
       try {
         const response = await axios.get(
-          "http://13.201.194.131:5000/patientdetails"
+          "http://localhost:5000/patientdetails"
         );
         setPatients(response.data);
       } catch (error) {

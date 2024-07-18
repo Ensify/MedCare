@@ -20,7 +20,9 @@ const otpconfig = {
   digits: true,
 };
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(
+  "mongodb+srv://SarumathyPrabakaran:sarumathy@cluster0.lbdvmf4.mongodb.net/medical-simplify?retryWrites=true&w=majority"
+);
 const otpStorage = {};
 
 const db = mongoose.connection;
