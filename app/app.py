@@ -46,9 +46,9 @@ def get_next_version_id(collection_auto_increment, coll_name, scan=None):
 def send_mail(receiver_email, flag, hospital_name=None, otp=None):
     port = 465  
     smtp_server = "smtp.gmail.com"
-    sender_email = "vignesh1234can@gmail.com"  
+    sender_email = os.environ.get("EMAIL_ID")  
     # receiver_email = "your@gmail.com"  
-    password = "nhcy nbkt teag fnos"
+    password = os.environ.get("EMAIL_PASSWORD")  
     if flag:
         message = """
         Subject: Medical Simplify - Verification Successful.
